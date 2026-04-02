@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CCA-F · Claude Certified Architect Foundations</title>
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a12;--bg2:#111120;--bg3:#181828;--bg4:#1e1e32;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --text:#f0eeff;--text2:rgba(240,238,255,0.65);--text3:rgba(240,238,255,0.35);
+  --purple:#a78bfa;--purple2:#7c3aed;--purple3:rgba(167,139,250,0.15);
+  --blue:#60a5fa;--blue2:#2563eb;--blue3:rgba(96,165,250,0.12);
+  --teal:#34d399;--teal3:rgba(52,211,153,0.12);
+  --amber:#fbbf24;--amber3:rgba(251,191,36,0.12);
+  --coral:#fb923c;--coral3:rgba(251,146,60,0.12);
+  --pink:#f472b6;--pink3:rgba(244,114,182,0.12);
+  --red:#f87171;--green:#4ade80;
+  --radius:12px;--radius2:8px;--radius3:6px;
+  --font:system-ui,-apple-system,'Segoe UI',sans-serif;
+  --circ:251.33;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;background:rgba(10,10,18,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0;padding:0 20px;height:54px}
+.nav-brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;color:var(--text);text-decoration:none;margin-right:auto}
+.nav-brand-dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--blue))}
+.nav-tabs{display:flex;gap:2px}
+.nav-tab{padding:6px 14px;border-radius:var(--radius2);font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;border:none;background:none;transition:all .15s}
+.nav-tab:hover{background:rgba(255,255,255,0.06);color:var(--text)}
+.nav-tab.active{background:var(--purple3);color:var(--purple)}
+.nav-ext{font-size:12px;padding:5px 12px;border-radius:var(--radius2);background:var(--purple3);color:var(--purple);text-decoration:none;border:1px solid rgba(167,139,250,0.25);transition:.15s;margin-left:12px}
+.nav-ext:hover{background:rgba(167,139,250,0.25)}
+
+/* ── LAYOUT ── */
+.page{display:none;padding:24px 20px 60px;max-width:960px;margin:0 auto}
+.page.active{display:block}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,rgba(124,58,237,0.18),rgba(37,99,235,0.12));border:1px solid rgba(167,139,250,0.2);border-radius:20px;padding:28px 32px;margin-bottom:20px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.hero-left{flex:1;min-width:200px}
+.hero-eyebrow{font-size:11px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+.hero-title{font-size:32px;font-weight:800;line-height:1.15;color:var(--text)}
+.hero-title span{background:linear-gradient(90deg,var(--purple),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:13px;color:var(--text2);margin-top:8px;line-height:1.6}
+.hero-right{display:flex;flex-direction:column;align-items:center;gap:8px}
+.ring-wrap{position:relative;width:100px;height:100px}
+.ring-wrap svg{width:100px;height:100px}
+.ring-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.ring-pct{font-size:24px;font-weight:700;color:var(--text);line-height:1}
+.ring-tiny{font-size:10px;color:var(--text3);margin-top:3px}
+
+/* ── NEXT UP ── */
+.next-up{background:linear-gradient(135deg,rgba(124,58,237,0.25),rgba(79,70,229,0.2));border:1px solid rgba(167,139,250,0.25);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:.15s}
+.next-up:hover{opacity:.9;transform:translateY(-1px)}
+.next-up.hidden{display:none}
+.next-up-icon{width:36px;height:36px;border-radius:10px;background:rgba(167,139,250,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;color:var(--purple)}
+.next-up-body{flex:1;min-width:0}
+.next-up-label{font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px}
+.next-up-lesson{font-size:14px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.next-up-course{font-size:11px;color:var(--text2);margin-top:2px}
+.next-up-arrow{font-size:18px;color:var(--text3);flex-shrink:0}
+
+/* ── METRICS ── */
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px}
+.metric{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
+.metric-lbl{font-size:11px;color:var(--text3);margin-bottom:5px}
+.metric-val{font-size:24px;font-weight:700;color:var(--text)}
+.metric-sub{font-size:10px;color:var(--text3);margin-top:3px}
+
+/* ── SECTION LABEL ── */
+.sec-lbl{font-size:11px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px}
+
+/* ── DOMAIN CARD ── */
+.domain-card{border:1px solid var(--border);border-radius:var(--radius);background:var(--bg2);overflow:hidden;margin-bottom:10px;transition:border-color .2s}
+.domain-card.open{border-color:var(--border2)}
+.domain-header{display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;transition:background .15s}
+.domain-header:hover{background:rgba(255,255,255,0.03)}
+.domain-icon{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.domain-info{flex:1;min-width:0}
+.domain-name{font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.domain-meta{display:flex;align-items:center;gap:10px;margin-top:6px}
+.bar-track{flex:1;height:4px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .5s ease}
+.lessons-count{font-size:11px;color:var(--text3);white-space:nowrap}
+.weight-pill{font-size:10px;padding:2px 8px;border-radius:5px;font-weight:600;white-space:nowrap}
+.domain-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.domain-pct{font-size:20px;font-weight:700;min-width:44px;text-align:right}
+.chev{width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--text3);transition:transform .2s;flex-shrink:0}
+.chev.open{transform:rotate(180deg)}
+
+/* ── COURSES ── */
+.courses-wrap{border-top:1px solid rgba(255,255,255,0.05)}
+.course-block:not(:last-child){border-bottom:1px solid rgba(255,255,255,0.04)}
+.course-header{display:flex;align-items:center;gap:10px;padding:11px 18px 11px 22px;cursor:pointer;transition:background .12s}
+.course-header:hover{background:rgba(255,255,255,0.03)}
+.course-status{width:22px;height:22px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff;transition:background .2s}
+.course-info{flex:1;min-width:0}
+.course-name{font-size:12px;font-weight:500;color:rgba(255,255,255,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.course-meta{display:flex;align-items:center;gap:6px;margin-top:3px}
+.course-bar{width:80px;height:3px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+.course-bar-fill{height:100%;border-radius:2px;transition:width .4s}
+.course-count{font-size:10px;color:var(--text3)}
+.course-right{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.course-pct{font-size:13px;font-weight:500}
+.ext-link{font-size:11px;text-decoration:none;border-radius:4px;padding:2px 8px;border:1px solid var(--border2);color:var(--text2);transition:.15s}
+.ext-link:hover{color:var(--text);border-color:rgba(255,255,255,.3)}
+.rst-btn{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:4px;color:var(--text3);font-size:11px;padding:2px 7px;cursor:pointer;transition:.15s;font-family:var(--font)}
+.rst-btn:hover{background:rgba(255,80,80,.15);color:rgba(255,150,150,.9);border-color:rgba(255,100,100,.3)}
+.c-chev{font-size:9px;color:var(--text3);transition:transform .2s}
+.c-chev.open{transform:rotate(180deg)}
+.course-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.04em;flex-shrink:0;display:none}
+.course-badge.show{display:inline-block}
+.badge-bronze{background:linear-gradient(135deg,#cd7f32,#a0522d);color:#fff6e0}
+.badge-silver{background:linear-gradient(135deg,#c0c0c0,#a8a8a8);color:#fff}
+.badge-gold{background:linear-gradient(135deg,#ffd700,#ffa500);color:#3d2600}
+.badge-platinum{background:linear-gradient(135deg,#e5e4e2,#b0c4de,#e5e4e2);color:#1a1a2e}
+
+/* ── LESSONS ── */
+.lessons-wrap{padding:6px 18px 12px 46px}
+.lesson-row{display:flex;align-items:center;gap:10px;padding:7px 6px;border-radius:8px;transition:background .1s}
+.lesson-row:hover{background:rgba(255,255,255,.04)}
+.lesson-row:not(:last-child){border-bottom:1px solid rgba(255,255,255,.03)}
+.check{width:18px;height:18px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .18s;border:1.5px solid rgba(255,255,255,.2);background:transparent;cursor:pointer}
+.check.done{border-color:transparent}
+.check-tick{display:none;font-size:9px;color:#fff;pointer-events:none;line-height:1}
+.check.done .check-tick{display:block}
+.lesson-num{font-size:10px;color:var(--text3);flex-shrink:0;min-width:16px;text-align:right}
+.lesson-link{font-size:12px;color:rgba(255,255,255,.8);text-decoration:underline dotted;text-decoration-color:rgba(255,255,255,.15);cursor:pointer;line-height:1.4}
+.lesson-link:hover{color:#fff;text-decoration-color:rgba(255,255,255,.4)}
+.lesson-link.done{color:var(--text3);text-decoration:line-through;text-decoration-color:rgba(255,255,255,.12)}
+
+/* ── COMPLETE BANNER ── */
+.complete-banner{background:linear-gradient(135deg,rgba(99,102,241,.25),rgba(139,92,246,.2));border:1px solid rgba(139,92,246,.4);border-radius:var(--radius);padding:16px 20px;margin-top:12px;display:none;align-items:center;gap:12px}
+.complete-banner.show{display:flex}
+.complete-banner-text{font-size:14px;color:#e0d7ff;font-weight:500}
+
+/* ══════════════════════════════
+   INSTRUCTOR PAGE
+══════════════════════════════ */
+.instructor-hero{background:linear-gradient(135deg,rgba(52,211,153,0.1),rgba(96,165,250,0.08));border:1px solid rgba(52,211,153,0.2);border-radius:20px;padding:28px 32px;margin-bottom:24px}
+.instructor-hero h1{font-size:28px;font-weight:800;margin-bottom:8px}
+.instructor-hero h1 span{background:linear-gradient(90deg,var(--teal),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.instructor-hero p{font-size:14px;color:var(--text2);line-height:1.7;max-width:600px}
+
+.domain-overview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:24px}
+.domain-overview-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;transition:.15s;position:relative;overflow:hidden}
+.domain-overview-card{border-top-width:3px!important}
+.domain-overview-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.doc-num{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.doc-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:8px}
+.doc-weight{font-size:11px;font-weight:600;padding:3px 9px;border-radius:5px;display:inline-block}
+.doc-tasks{font-size:11px;color:var(--text3);margin-top:6px}
+
+/* ── STUDY CONTENT ── */
+.study-domain{margin-bottom:32px}
+.study-domain-header{display:flex;align-items:center;gap:12px;padding:20px 20px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;cursor:pointer;transition:.15s}
+.study-domain-header:hover{background:var(--bg4)}
+.sdh-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.sdh-info{flex:1}
+.sdh-title{font-size:15px;font-weight:700;color:var(--text)}
+.sdh-sub{font-size:12px;color:var(--text2);margin-top:3px}
+.sdh-chev{font-size:12px;color:var(--text3);transition:transform .2s;margin-left:auto}
+.sdh-chev.open{transform:rotate(180deg)}
+.study-domain-body{display:none;background:var(--bg2);border:1px solid var(--border);border-top:none;border-radius:0 0 var(--radius) var(--radius);padding:0}
+.study-domain-body.open{display:block}
+
+.task-block{padding:20px 24px;border-bottom:1px solid rgba(255,255,255,.04)}
+.task-block:last-child{border-bottom:none}
+.task-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:16px}
+.task-num{font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0;margin-top:2px;letter-spacing:.06em;text-transform:uppercase}
+.task-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.4}
+.knowledge-section,.skills-section{margin-bottom:14px}
+.ks-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.ks-label::before{content:'';width:3px;height:12px;border-radius:2px;display:inline-block}
+.knowledge-section .ks-label::before{background:var(--purple)}
+.skills-section .ks-label::before{background:var(--teal)}
+.ks-label span{color:var(--text2)}
+.ks-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.ks-list li{font-size:12px;color:var(--text2);line-height:1.55;padding-left:14px;position:relative}
+.ks-list li::before{content:'';position:absolute;left:0;top:7px;width:5px;height:5px;border-radius:50%}
+.knowledge-section .ks-list li::before{background:rgba(167,139,250,.5)}
+.skills-section .ks-list li::before{background:rgba(52,211,153,.5)}
+code{font-size:11px;font-family:monospace;background:rgba(255,255,255,.08);padding:1px 5px;border-radius:3px;color:var(--purple)}
+
+/* ── SCENARIOS ── */
+.scenario-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin-bottom:24px}
+.scenario-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:18px;transition:.15s}
+.scenario-card:hover{border-color:var(--border2)}
+.sc-num{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.sc-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px;line-height:1.4}
+.sc-body{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:12px}
+.sc-domains{display:flex;flex-wrap:wrap;gap:5px}
+.sc-domain-tag{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500}
+
+/* ── PRACTICE QUESTIONS ── */
+.quiz-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.quiz-stats{display:flex;gap:16px}
+.quiz-stat{font-size:13px;color:var(--text2)}
+.quiz-stat strong{color:var(--text);font-weight:600}
+.quiz-btn{padding:8px 18px;border-radius:var(--radius2);font-size:13px;font-weight:500;cursor:pointer;border:1px solid;transition:.15s;font-family:var(--font)}
+.quiz-btn-primary{background:var(--purple3);color:var(--purple);border-color:rgba(167,139,250,.3)}
+.quiz-btn-primary:hover{background:rgba(167,139,250,.25)}
+.quiz-btn-secondary{background:transparent;color:var(--text2);border-color:var(--border2)}
+.quiz-btn-secondary:hover{background:rgba(255,255,255,.05)}
+
+.q-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:14px}
+.q-meta{padding:12px 18px 0;display:flex;align-items:center;gap:8px}
+.q-scenario-tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em}
+.q-num{font-size:11px;color:var(--text3);margin-left:auto}
+.q-body{padding:16px 18px 12px;font-size:14px;color:var(--text);line-height:1.65}
+.q-options{padding:0 18px 16px;display:flex;flex-direction:column;gap:7px}
+.q-option{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-radius:var(--radius2);border:1px solid var(--border);cursor:pointer;transition:.15s;background:transparent}
+.q-option:hover:not(.locked){border-color:var(--border2);background:rgba(255,255,255,.03)}
+.q-option.selected{border-color:rgba(167,139,250,.4);background:var(--purple3)}
+.q-option.correct{border-color:rgba(52,211,153,.4);background:rgba(52,211,153,.08)}
+.q-option.wrong{border-color:rgba(248,113,113,.35);background:rgba(248,113,113,.07)}
+.q-opt-letter{width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;color:var(--text2)}
+.q-option.selected .q-opt-letter{background:var(--purple);color:#fff}
+.q-option.correct .q-opt-letter{background:var(--teal);color:#fff}
+.q-option.wrong .q-opt-letter{background:var(--red);color:#fff}
+.q-opt-text{font-size:13px;color:var(--text2);line-height:1.5;flex:1}
+.q-explanation{margin:0 18px 16px;padding:12px 14px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);border-radius:var(--radius2);font-size:12px;color:var(--text2);line-height:1.6;display:none}
+.q-explanation.show{display:block}
+.q-explanation strong{color:var(--teal)}
+.q-result-icon{font-size:14px;margin-right:4px}
+
+/* ── COURSES REFERENCE ── */
+.courses-ref-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.course-ref-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:16px;transition:.15s}
+.course-ref-card:hover{border-color:var(--border2);transform:translateY(-1px)}
+.crc-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;line-height:1.4}
+.crc-domains{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}
+.crc-domain{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500}
+.crc-link{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--purple);text-decoration:none;font-weight:500;transition:.15s}
+.crc-link:hover{color:var(--blue)}
+
+/* ── UTIL ── */
+@keyframes pulse-ring{0%,100%{opacity:.6}50%{opacity:1}}
+.pulse{animation:pulse-ring 2s ease-in-out infinite}
+.prog-footer{margin-top:20px;font-size:11px;color:var(--text3);text-align:center}
+
+@media(max-width:600px){
+  .metrics{grid-template-columns:1fr 1fr}
+  .hero{padding:20px}
+  .hero-title{font-size:24px}
+  nav{padding:0 14px}
+  .nav-tab{padding:5px 10px;font-size:12px}
+  .domain-overview-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="#">
+    <div class="nav-brand-dot"></div>
+    CCA-F
+  </a>
+  <div class="nav-tabs">
+    <button class="nav-tab active" id="tab-instructor" onclick="switchPage('instructor',this)">Domains</button>
+    <button class="nav-tab" id="tab-courses" onclick="switchPage('courses',this)">Courses</button>
+    <button class="nav-tab" id="tab-scenarios" onclick="switchPage('scenarios',this)">Scenarios</button>
+    <button class="nav-tab" id="tab-practice" onclick="switchPage('practice',this)">Practice</button>
+    <button class="nav-tab" id="tab-progress" onclick="switchPage('progress',this)">Progress</button>
+  </div>
+  <a class="nav-ext" href="https://anthropic.skilljar.com/" target="_blank" rel="noopener noreferrer" onclick="window.open('https://anthropic.skilljar.com/','_blank');return false;">Academy ↗</a>
+</nav>
+
+<!-- ═══ PROGRESS PAGE ═══ -->
+<div class="page" id="page-progress">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Anthropic Academy</div>
+      <div class="hero-title">CCA-F <span>Foundations</span></div>
+      <div class="hero-sub">Claude Certified Architect — track your path to certification. Pass score: 720/1000.</div>
+    </div>
+    <div class="hero-right">
+      <div class="ring-wrap">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#a78bfa"/><stop offset="100%" stop-color="#60a5fa"/></linearGradient></defs>
+          <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="7"/>
+          <circle id="prog-arc" cx="50" cy="50" r="40" fill="none" stroke="url(#rg)" stroke-width="7" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="251.33" stroke-dashoffset="251.33" style="transition:stroke-dashoffset .7s ease"/>
+        </svg>
+        <div class="ring-center">
+          <div class="ring-pct" id="overall-pct">0%</div>
+          <div class="ring-tiny" id="overall-sub">0 / 0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="next-up hidden" id="next-up-card" onclick="handleNextUp()">
+    <div class="next-up-icon">▶</div>
+    <div class="next-up-body">
+      <div class="next-up-label">Resume where you left off</div>
+      <div class="next-up-lesson" id="next-lesson-name">—</div>
+      <div class="next-up-course" id="next-course-name">—</div>
+    </div>
+    <div class="next-up-arrow">›</div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric"><div class="metric-lbl">Lessons done</div><div class="metric-val" id="m-lessons">0/0</div><div class="metric-sub">across all domains</div></div>
+    <div class="metric"><div class="metric-lbl">Domains started</div><div class="metric-val" id="m-domains">0/5</div><div class="metric-sub">in progress</div></div>
+    <div class="metric"><div class="metric-lbl">Weighted score</div><div class="metric-val" id="m-weighted">0%</div><div class="metric-sub">by exam weight</div></div>
+  </div>
+
+  <div class="sec-lbl">Domains → Courses → Lessons</div>
+  <div id="tree"></div>
+  <div class="complete-banner" id="complete-banner">
+    <span style="font-size:22px">🏆</span>
+    <div class="complete-banner-text">All lessons complete! You're ready to sit the CCA-F exam.</div>
+  </div>
+  <div class="prog-footer">Expand domain → open course → tick circle to mark done · lesson name opens the course</div>
+</div>
+
+<!-- ═══ INSTRUCTOR PAGE ═══ -->
+<div class="page active" id="page-instructor">
+  <div class="instructor-hero">
+    <h1>Your <span>Instructor</span> Guide</h1>
+    <p>Detailed knowledge and skill breakdowns for every exam domain and task statement. Tap a domain to expand all task statements, knowledge points, and skills required.</p>
+  </div>
+
+  <div class="sec-lbl" style="margin-bottom:14px">Domain Overview — click to jump</div>
+  <div class="domain-overview-grid" id="domain-overview-grid"></div>
+
+  <div class="sec-lbl" style="margin-top:28px;margin-bottom:16px">Study by Domain & Task</div>
+  <div id="study-tree"></div>
+</div>
+
+<!-- ═══ SCENARIOS PAGE ═══ -->
+<div class="page" id="page-scenarios">
+  <div class="instructor-hero" style="background:linear-gradient(135deg,rgba(251,146,60,0.1),rgba(251,191,36,0.07));border-color:rgba(251,146,60,0.2)">
+    <h1>Exam <span style="background:linear-gradient(90deg,var(--coral),var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Scenarios</span></h1>
+    <p>The exam presents 4 of these 6 scenarios, picked at random. Each scenario frames realistic production questions across multiple domains. Study each scenario and the domains it tests.</p>
+  </div>
+  <div class="scenario-grid" id="scenario-grid"></div>
+</div>
+
+<!-- ═══ PRACTICE PAGE ═══ -->
+<div class="page" id="page-practice">
+  <div class="instructor-hero" style="background:linear-gradient(135deg,rgba(244,114,182,0.1),rgba(167,139,250,0.08));border-color:rgba(244,114,182,0.2)">
+    <h1>Practice <span style="background:linear-gradient(90deg,var(--pink),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Questions</span></h1>
+    <p>12 exam-style questions with full explanations. Select your answer, then check to see the reasoning.</p>
+  </div>
+
+  <div class="quiz-header">
+    <div class="quiz-stats">
+      <div class="quiz-stat">Score: <strong id="q-score">0</strong> / <strong id="q-total">0</strong></div>
+      <div class="quiz-stat">Answered: <strong id="q-answered">0</strong></div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="quiz-btn quiz-btn-secondary" onclick="resetQuiz()">Reset</button>
+      <button class="quiz-btn quiz-btn-primary" onclick="revealAll()">Reveal all</button>
+    </div>
+  </div>
+  <div id="quiz-container"></div>
+</div>
+
+<!-- ═══ COURSES PAGE ═══ -->
+<div class="page" id="page-courses">
+  <div class="instructor-hero" style="background:linear-gradient(135deg,rgba(96,165,250,0.1),rgba(52,211,153,0.07));border-color:rgba(96,165,250,0.2)">
+    <h1>Course <span style="background:linear-gradient(90deg,var(--blue),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Reference</span></h1>
+    <p>All Anthropic Academy courses mapped to CCA-F exam domains. Click any course to open it on the academy.</p>
+  </div>
+  <div class="sec-lbl">All courses</div>
+  <div class="courses-ref-grid" id="courses-ref-grid"></div>
+</div>
+
+<script>
+var DOMAINS=[
+  {id:1,name:"Agentic Architecture & Orchestration",weight:27,color:"#a78bfa",bg:"rgba(167,139,250,0.15)",tc:"#c4b5fd",
+   tasks:[
+    {id:"1.1",title:"Design and implement agentic loops for autonomous task execution",
+     know:["The agentic loop lifecycle: sending requests to Claude, inspecting stop_reason (\"tool_use\" vs \"end_turn\"), executing requested tools, and returning results for the next iteration","How tool results are appended to conversation history so the model can reason about the next action","The distinction between model-driven decision-making (Claude reasons about which tool to call next) and pre-configured decision trees or tool sequences"],
+     skills:["Implementing agentic loop control flow that continues when stop_reason is \"tool_use\" and terminates when \"end_turn\"","Adding tool results to conversation context between iterations so the model can incorporate new information","Avoiding anti-patterns such as parsing natural language signals to determine loop termination, setting arbitrary iteration caps, or checking for assistant text content as a completion indicator"]},
+    {id:"1.2",title:"Orchestrate multi-agent systems with coordinator-subagent patterns",
+     know:["Hub-and-spoke architecture where a coordinator agent manages all inter-subagent communication, error handling, and information routing","How subagents operate with isolated context — they do not inherit the coordinator's conversation history automatically","The role of the coordinator in task decomposition, delegation, result aggregation, and deciding which subagents to invoke based on query complexity","Risks of overly narrow task decomposition by the coordinator, leading to incomplete coverage of broad research topics"],
+     skills:["Designing coordinator agents that analyze query requirements and dynamically select which subagents to invoke rather than always routing through the full pipeline","Partitioning research scope across subagents to minimize duplication (e.g., assigning distinct subtopics or source types to each agent)","Implementing iterative refinement loops where the coordinator evaluates synthesis output for gaps and re-delegates with targeted queries","Routing all subagent communication through the coordinator for observability, consistent error handling, and controlled information flow"]},
+    {id:"1.3",title:"Configure subagent invocation, context passing, and spawning",
+     know:["The Task tool as the mechanism for spawning subagents, and the requirement that allowedTools must include \"Task\" for a coordinator to invoke subagents","That subagent context must be explicitly provided in the prompt — subagents do not automatically inherit parent context or share memory","The AgentDefinition configuration including descriptions, system prompts, and tool restrictions for each subagent type","Fork-based session management for exploring divergent approaches from a shared analysis baseline"],
+     skills:["Including complete findings from prior agents directly in the subagent's prompt (e.g., passing web search results to the synthesis subagent)","Using structured data formats to separate content from metadata (source URLs, document names, page numbers) when passing context between agents","Spawning parallel subagents by emitting multiple Task tool calls in a single coordinator response rather than across separate turns","Designing coordinator prompts that specify research goals and quality criteria rather than step-by-step procedural instructions"]},
+    {id:"1.4",title:"Implement multi-step workflows with enforcement and handoff patterns",
+     know:["The difference between programmatic enforcement (hooks, prerequisite gates) and prompt-based guidance for workflow ordering","When deterministic compliance is required (e.g., identity verification before financial operations), prompt instructions alone have a non-zero failure rate","Structured handoff protocols for mid-process escalation that include customer details, root cause analysis, and recommended actions"],
+     skills:["Implementing programmatic prerequisites that block downstream tool calls until prerequisite steps have completed (e.g., blocking process_refund until get_customer has returned a verified customer ID)","Decomposing multi-concern customer requests into distinct items, then investigating each in parallel before synthesizing a unified resolution","Compiling structured handoff summaries when escalating to human agents who lack access to the conversation transcript"]},
+    {id:"1.5",title:"Apply Agent SDK hooks for tool call interception and data normalization",
+     know:["Hook patterns (e.g., PostToolUse) that intercept tool results for transformation before the model processes them","Hook patterns that intercept outgoing tool calls to enforce compliance rules (e.g., blocking refunds above a threshold)","The distinction between using hooks for deterministic guarantees versus relying on prompt instructions for probabilistic compliance"],
+     skills:["Implementing PostToolUse hooks to normalize heterogeneous data formats (Unix timestamps, ISO 8601, numeric status codes) from different MCP tools before the agent processes them","Implementing tool call interception hooks that block policy-violating actions and redirect to alternative workflows (e.g., human escalation)","Choosing hooks over prompt-based enforcement when business rules require guaranteed compliance"]},
+    {id:"1.6",title:"Design task decomposition strategies for complex workflows",
+     know:["When to use fixed sequential pipelines (prompt chaining) versus dynamic adaptive decomposition based on intermediate findings","Prompt chaining patterns that break reviews into sequential steps (e.g., analyze each file individually, then run a cross-file integration pass)","The value of adaptive investigation plans that generate subtasks based on what is discovered at each step"],
+     skills:["Selecting task decomposition patterns appropriate to the workflow: prompt chaining for predictable multi-aspect reviews, dynamic decomposition for open-ended investigation tasks","Splitting large code reviews into per-file local analysis passes plus a separate cross-file integration pass to avoid attention dilution","Decomposing open-ended tasks by first mapping structure, identifying high-impact areas, then creating a prioritized plan that adapts as dependencies are discovered"]},
+    {id:"1.7",title:"Manage session state, resumption, and forking",
+     know:["Named session resumption using --resume <session-name> to continue a specific prior conversation","fork_session for creating independent branches from a shared analysis baseline to explore divergent approaches","The importance of informing the agent about changes to previously analyzed files when resuming sessions after code modifications","Why starting a new session with a structured summary is more reliable than resuming with stale tool results"],
+     skills:["Using --resume with session names to continue named investigation sessions across work sessions","Using fork_session to create parallel exploration branches (e.g., comparing two testing strategies from a shared codebase analysis)","Choosing between session resumption (when prior context is mostly valid) and starting fresh with injected summaries (when prior tool results are stale)","Informing a resumed session about specific file changes for targeted re-analysis rather than requiring full re-exploration"]}
+   ]},
+  {id:2,name:"Tool Design & MCP Integration",weight:18,color:"#34d399",bg:"rgba(52,211,153,0.12)",tc:"#6ee7b7",
+   tasks:[
+    {id:"2.1",title:"Design effective tool interfaces with clear descriptions and boundaries",
+     know:["Tool descriptions are the primary mechanism LLMs use for tool selection; minimal descriptions lead to unreliable selection among similar tools","The importance of including input formats, example queries, edge cases, and boundary explanations in tool descriptions","How ambiguous or overlapping tool descriptions cause misrouting (e.g., analyze_content vs analyze_document with near-identical descriptions)","The impact of system prompt wording on tool selection: keyword-sensitive instructions can create unintended tool associations"],
+     skills:["Writing tool descriptions that clearly differentiate each tool's purpose, expected inputs, outputs, and when to use it versus similar alternatives","Renaming tools and updating descriptions to eliminate functional overlap (e.g., renaming analyze_content to extract_web_results with a web-specific description)","Splitting generic tools into purpose-specific tools with defined input/output contracts"]},
+    {id:"2.2",title:"Implement structured error responses for MCP tools",
+     know:["The MCP isError flag pattern for communicating tool failures back to the agent","The distinction between transient errors (timeouts, service unavailability), validation errors (invalid input), business errors (policy violations), and permission errors","Why uniform error responses (generic 'Operation failed') prevent the agent from making appropriate recovery decisions","The difference between retryable and non-retryable errors, and how returning structured metadata prevents wasted retry attempts"],
+     skills:["Returning structured error metadata including errorCategory (transient/validation/permission), isRetryable boolean, and human-readable descriptions","Implementing local error recovery within subagents for transient failures, propagating to the coordinator only errors that cannot be resolved locally","Distinguishing between access failures (needing retry decisions) and valid empty results (representing successful queries with no matches)"]},
+    {id:"2.3",title:"Distribute tools appropriately across agents and configure tool choice",
+     know:["The principle that giving an agent access to too many tools (e.g., 18 instead of 4–5) degrades tool selection reliability","Why agents with tools outside their specialization tend to misuse them (e.g., a synthesis agent attempting web searches)","Scoped tool access: giving agents only the tools needed for their role","tool_choice configuration options: 'auto', 'any', and forced tool selection"],
+     skills:["Restricting each subagent's tool set to those relevant to its role, preventing cross-specialization misuse","Using tool_choice forced selection to ensure a specific tool is called first","Setting tool_choice: 'any' to guarantee the model calls a tool rather than returning conversational text"]},
+    {id:"2.4",title:"Integrate MCP servers into Claude Code and agent workflows",
+     know:["MCP server scoping: project-level (.mcp.json) for shared team tooling vs user-level (~/.claude.json) for personal/experimental servers","Environment variable expansion in .mcp.json for credential management without committing secrets","That tools from all configured MCP servers are discovered at connection time and available simultaneously","MCP resources as a mechanism for exposing content catalogs to reduce exploratory tool calls"],
+     skills:["Configuring shared MCP servers in project-scoped .mcp.json with environment variable expansion for authentication tokens","Configuring personal/experimental MCP servers in user-scoped ~/.claude.json","Enhancing MCP tool descriptions to explain capabilities and outputs in detail","Choosing existing community MCP servers over custom implementations for standard integrations, reserving custom servers for team-specific workflows"]},
+    {id:"2.5",title:"Select and apply built-in tools (Read, Write, Edit, Bash, Grep, Glob) effectively",
+     know:["Grep for content search (searching file contents for patterns like function names, error messages, or import statements)","Glob for file path pattern matching (finding files by name or extension patterns)","Read/Write for full file operations; Edit for targeted modifications using unique text matching","When Edit fails due to non-unique text matches, using Read + Write as a fallback for reliable file modifications"],
+     skills:["Selecting Grep for searching code content across a codebase","Selecting Glob for finding files matching naming patterns (e.g., **/*.test.tsx)","Building codebase understanding incrementally: starting with Grep to find entry points, then using Read to follow imports and trace flows, rather than reading all files upfront"]}
+   ]},
+  {id:3,name:"Claude Code Configuration & Workflows",weight:20,color:"#fb923c",bg:"rgba(251,146,60,0.12)",tc:"#fdba74",
+   tasks:[
+    {id:"3.1",title:"Configure CLAUDE.md files with appropriate hierarchy, scoping, and modular organization",
+     know:["The CLAUDE.md configuration hierarchy: user-level (~/.claude/CLAUDE.md), project-level (.claude/CLAUDE.md or root CLAUDE.md), and directory-level (subdirectory CLAUDE.md files)","That user-level settings apply only to that user — instructions in ~/.claude/CLAUDE.md are not shared with teammates via version control","The @import syntax for referencing external files to keep CLAUDE.md modular",".claude/rules/ directory for organizing topic-specific rule files as an alternative to a monolithic CLAUDE.md"],
+     skills:["Diagnosing configuration hierarchy issues (e.g., a new team member not receiving instructions because they're in user-level rather than project-level configuration)","Using @import to selectively include relevant standards files in each package's CLAUDE.md","Splitting large CLAUDE.md files into focused topic-specific files in .claude/rules/","Using the /memory command to verify which memory files are loaded and diagnose inconsistent behavior across sessions"]},
+    {id:"3.2",title:"Create and configure custom slash commands and skills",
+     know:["Project-scoped commands in .claude/commands/ (shared via version control) vs user-scoped commands in ~/.claude/commands/ (personal)","Skills in .claude/skills/ with SKILL.md files that support frontmatter configuration including context: fork, allowed-tools, and argument-hint","The context: fork frontmatter option for running skills in an isolated sub-agent context, preventing skill outputs from polluting the main conversation","Personal skill customization: creating personal variants in ~/.claude/skills/ with different names to avoid affecting teammates"],
+     skills:["Creating project-scoped slash commands in .claude/commands/ for team-wide availability via version control","Using context: fork to isolate skills that produce verbose output or exploratory context from the main session","Configuring allowed-tools in skill frontmatter to restrict tool access during skill execution","Using argument-hint frontmatter to prompt developers for required parameters when they invoke the skill without arguments"]},
+    {id:"3.3",title:"Apply path-specific rules for conditional convention loading",
+     know:[".claude/rules/ files with YAML frontmatter paths fields containing glob patterns for conditional rule activation","How path-scoped rules load only when editing matching files, reducing irrelevant context and token usage","The advantage of glob-pattern rules over directory-level CLAUDE.md files for conventions that span multiple directories"],
+     skills:["Creating .claude/rules/ files with YAML frontmatter path scoping so rules load only when editing matching files","Using glob patterns in path-specific rules to apply conventions to files by type regardless of directory location","Choosing path-specific rules over subdirectory CLAUDE.md files when conventions must apply to files spread across the codebase"]},
+    {id:"3.4",title:"Determine when to use plan mode vs direct execution",
+     know:["Plan mode is designed for complex tasks involving large-scale changes, multiple valid approaches, architectural decisions, and multi-file modifications","Direct execution is appropriate for simple, well-scoped changes (e.g., adding a single validation check to one function)","Plan mode enables safe codebase exploration and design before committing to changes, preventing costly rework","The Explore subagent for isolating verbose discovery output and returning summaries to preserve main conversation context"],
+     skills:["Selecting plan mode for tasks with architectural implications (e.g., microservice restructuring, library migrations affecting 45+ files)","Selecting direct execution for well-understood changes with clear scope (e.g., a single-file bug fix with a clear stack trace)","Using the Explore subagent for verbose discovery phases to prevent context window exhaustion","Combining plan mode for investigation with direct execution for implementation"]},
+    {id:"3.5",title:"Apply iterative refinement techniques for progressive improvement",
+     know:["Concrete input/output examples as the most effective way to communicate expected transformations when prose descriptions are interpreted inconsistently","Test-driven iteration: writing test suites first, then iterating by sharing test failures to guide progressive improvement","The interview pattern: having Claude ask questions to surface considerations the developer may not have anticipated","When to provide all issues in a single message (interacting problems) versus fixing them sequentially (independent problems)"],
+     skills:["Providing 2–3 concrete input/output examples to clarify transformation requirements","Writing test suites covering expected behavior, edge cases, and performance requirements before implementation","Using the interview pattern to surface design considerations before implementing solutions in unfamiliar domains","Addressing multiple interacting issues in a single detailed message when fixes interact, versus sequential iteration for independent issues"]},
+    {id:"3.6",title:"Integrate Claude Code into CI/CD pipelines",
+     know:["The -p (or --print) flag for running Claude Code in non-interactive mode in automated pipelines","--output-format json and --json-schema CLI flags for enforcing structured output in CI contexts","CLAUDE.md as the mechanism for providing project context to CI-invoked Claude Code","Session context isolation: why the same Claude session that generated code is less effective at reviewing its own changes"],
+     skills:["Running Claude Code in CI with the -p flag to prevent interactive input hangs","Using --output-format json with --json-schema to produce machine-parseable structured findings for automated posting as inline PR comments","Including prior review findings in context when re-running reviews after new commits","Documenting testing standards, valuable test criteria, and available fixtures in CLAUDE.md to improve test generation quality"]}
+   ]},
+  {id:4,name:"Prompt Engineering & Structured Output",weight:20,color:"#60a5fa",bg:"rgba(96,165,250,0.12)",tc:"#93c5fd",
+   tasks:[
+    {id:"4.1",title:"Design prompts with explicit criteria to improve precision and reduce false positives",
+     know:["The importance of explicit criteria over vague instructions (e.g., 'flag comments only when claimed behavior contradicts actual code behavior' vs 'check that comments are accurate')","How general instructions like 'be conservative' or 'only report high-confidence findings' fail to improve precision compared to specific categorical criteria","The impact of false positive rates on developer trust: high false positive categories undermine confidence in accurate categories"],
+     skills:["Writing specific review criteria that define which issues to report (bugs, security) versus skip (minor style, local patterns) rather than relying on confidence-based filtering","Temporarily disabling high false-positive categories to restore developer trust while improving prompts for those categories","Defining explicit severity criteria with concrete code examples for each severity level to achieve consistent classification"]},
+    {id:"4.2",title:"Apply few-shot prompting to improve output consistency and quality",
+     know:["Few-shot examples as the most effective technique for achieving consistently formatted, actionable output when detailed instructions alone produce inconsistent results","The role of few-shot examples in demonstrating ambiguous-case handling (e.g., tool selection for ambiguous requests, branch-level test coverage gaps)","How few-shot examples enable the model to generalize judgment to novel patterns rather than matching only pre-specified cases","The effectiveness of few-shot examples for reducing hallucination in extraction tasks (e.g., handling informal measurements, varied document structures)"],
+     skills:["Creating 2–4 targeted few-shot examples for ambiguous scenarios that show reasoning for why one action was chosen over plausible alternatives","Including few-shot examples that demonstrate specific desired output format (location, issue, severity, suggested fix)","Providing few-shot examples distinguishing acceptable code patterns from genuine issues to reduce false positives while enabling generalization","Adding few-shot examples showing correct extraction from documents with varied formats"]},
+    {id:"4.3",title:"Enforce structured output using tool use and JSON schemas",
+     know:["Tool use (tool_use) with JSON schemas as the most reliable approach for guaranteed schema-compliant structured output, eliminating JSON syntax errors","The distinction between tool_choice: 'auto' (model may return text), 'any' (model must call a tool but can choose which), and forced tool selection","That strict JSON schemas via tool use eliminate syntax errors but do not prevent semantic errors (e.g., line items that don't sum to total)","Schema design considerations: required vs optional fields, enum fields with 'other' + detail string patterns for extensible categories"],
+     skills:["Defining extraction tools with JSON schemas as input parameters and extracting structured data from the tool_use response","Setting tool_choice: 'any' to guarantee structured output when multiple extraction schemas exist","Forcing a specific tool with tool_choice: {type: 'tool', name: 'extract_metadata'} to ensure a particular extraction runs before enrichment steps","Designing schema fields as optional (nullable) when source documents may not contain the information, preventing the model from fabricating values"]},
+    {id:"4.4",title:"Implement validation, retry, and feedback loops for extraction quality",
+     know:["Retry-with-error-feedback: appending specific validation errors to the prompt on retry to guide the model toward correction","The limits of retry: retries are ineffective when the required information is simply absent from the source document","Feedback loop design: tracking which code constructs trigger findings (detected_pattern field) to enable systematic analysis of dismissal patterns","The difference between semantic validation errors (values don't sum, wrong field placement) and schema syntax errors (eliminated by tool use)"],
+     skills:["Implementing follow-up requests that include the original document, the failed extraction, and specific validation errors for model self-correction","Identifying when retries will be ineffective versus when they will succeed (format mismatches, structural output errors)","Adding detected_pattern fields to structured findings to enable analysis of false positive patterns","Designing self-correction validation flows: extracting 'calculated_total' alongside 'stated_total' to flag discrepancies"]},
+    {id:"4.5",title:"Design efficient batch processing strategies",
+     know:["The Message Batches API: 50% cost savings, up to 24-hour processing window, no guaranteed latency SLA","Batch processing is appropriate for non-blocking, latency-tolerant workloads (overnight reports, weekly audits) and inappropriate for blocking workflows (pre-merge checks)","The batch API does not support multi-turn tool calling within a single request","custom_id fields for correlating batch request/response pairs"],
+     skills:["Matching API approach to workflow latency requirements: synchronous API for blocking pre-merge checks, batch API for overnight/weekly analysis","Calculating batch submission frequency based on SLA constraints","Handling batch failures: resubmitting only failed documents (identified by custom_id) with appropriate modifications","Using prompt refinement on a sample set before batch-processing large volumes to maximize first-pass success rates"]},
+    {id:"4.6",title:"Design multi-instance and multi-pass review architectures",
+     know:["Self-review limitations: a model retains reasoning context from generation, making it less likely to question its own decisions in the same session","Independent review instances (without prior reasoning context) are more effective at catching subtle issues than self-review instructions or extended thinking","Multi-pass review: splitting large reviews into per-file local analysis passes plus cross-file integration passes to avoid attention dilution and contradictory findings"],
+     skills:["Using a second independent Claude instance to review generated code without the generator's reasoning context","Splitting large multi-file reviews into focused per-file passes for local issues plus separate integration passes for cross-file data flow analysis","Running verification passes where the model self-reports confidence alongside each finding to enable calibrated review routing"]}
+   ]},
+  {id:5,name:"Context Management & Reliability",weight:15,color:"#f472b6",bg:"rgba(244,114,182,0.12)",tc:"#f9a8d4",
+   tasks:[
+    {id:"5.1",title:"Manage conversation context to preserve critical information across long interactions",
+     know:["Progressive summarization risks: condensing numerical values, percentages, dates, and customer-stated expectations into vague summaries","The 'lost in the middle' effect: models reliably process information at the beginning and end of long inputs but may omit findings from middle sections","How tool results accumulate in context and consume tokens disproportionately to their relevance","The importance of passing complete conversation history in subsequent API requests to maintain conversational coherence"],
+     skills:["Extracting transactional facts (amounts, dates, order numbers, statuses) into a persistent 'case facts' block included in each prompt, outside summarized history","Trimming verbose tool outputs to only relevant fields before they accumulate in context","Placing key findings summaries at the beginning of aggregated inputs and organizing detailed results with explicit section headers to mitigate position effects","Modifying upstream agents to return structured data (key facts, citations, relevance scores) instead of verbose content and reasoning chains"]},
+    {id:"5.2",title:"Design effective escalation and ambiguity resolution patterns",
+     know:["Appropriate escalation triggers: customer requests for a human, policy exceptions/gaps, and inability to make meaningful progress","The distinction between escalating immediately when a customer explicitly demands it versus offering to resolve when the issue is straightforward","Why sentiment-based escalation and self-reported confidence scores are unreliable proxies for actual case complexity"],
+     skills:["Adding explicit escalation criteria with few-shot examples to the system prompt demonstrating when to escalate versus resolve autonomously","Honoring explicit customer requests for human agents immediately without first attempting investigation","Escalating when policy is ambiguous or silent on the customer's specific request","Instructing the agent to ask for additional identifiers when tool results return multiple matches"]},
+    {id:"5.3",title:"Implement error propagation strategies across multi-agent systems",
+     know:["Structured error context (failure type, attempted query, partial results, alternative approaches) as enabling intelligent coordinator recovery decisions","The distinction between access failures (timeouts needing retry decisions) and valid empty results (successful queries with no matches)","Why generic error statuses ('search unavailable') hide valuable context from the coordinator","Why silently suppressing errors or terminating entire workflows on single failures are both anti-patterns"],
+     skills:["Returning structured error context including failure type, what was attempted, partial results, and potential alternatives to enable coordinator recovery","Having subagents implement local recovery for transient failures and only propagate errors they cannot resolve","Structuring synthesis output with coverage annotations indicating which findings are well-supported versus which have gaps due to unavailable sources"]},
+    {id:"5.4",title:"Manage context effectively in large codebase exploration",
+     know:["Context degradation in extended sessions: models start giving inconsistent answers and referencing 'typical patterns' rather than specific classes discovered earlier","The role of scratchpad files for persisting key findings across context boundaries","Subagent delegation for isolating verbose exploration output while the main agent coordinates high-level understanding","Structured state persistence for crash recovery: each agent exports state to a known location"],
+     skills:["Spawning subagents to investigate specific questions while the main agent preserves high-level coordination","Having agents maintain scratchpad files recording key findings, referencing them for subsequent questions to counteract context degradation","Summarizing key findings from one exploration phase before spawning sub-agents for the next phase","Using /compact to reduce context usage during extended exploration sessions"]},
+    {id:"5.5",title:"Design human review workflows and confidence calibration",
+     know:["The risk that aggregate accuracy metrics (e.g., 97% overall) may mask poor performance on specific document types or fields","Stratified random sampling for measuring error rates in high-confidence extractions and detecting novel error patterns","Field-level confidence scores calibrated using labeled validation sets for routing review attention"],
+     skills:["Implementing stratified random sampling of high-confidence extractions for ongoing error rate measurement","Analyzing accuracy by document type and field to verify consistent performance across all segments before reducing human review","Having models output field-level confidence scores, then calibrating review thresholds using labeled validation sets","Routing extractions with low model confidence or ambiguous source documents to human review"]},
+    {id:"5.6",title:"Preserve information provenance and handle uncertainty in multi-source synthesis",
+     know:["How source attribution is lost during summarization steps when findings are compressed without preserving claim-source mappings","The importance of structured claim-source mappings that the synthesis agent must preserve and merge","How to handle conflicting statistics from credible sources: annotating conflicts with source attribution rather than arbitrarily selecting one value","Temporal data: requiring publication/collection dates in structured outputs to prevent temporal differences from being misinterpreted as contradictions"],
+     skills:["Requiring subagents to output structured claim-source mappings (source URLs, document names, relevant excerpts)","Structuring reports with explicit sections distinguishing well-established findings from contested ones","Completing document analysis with conflicting values included and explicitly annotated, letting the coordinator decide how to reconcile","Requiring subagents to include publication or data collection dates in structured outputs"]}
+   ]}
+];
+
+var COURSES_DATA=[
+  {id:"api",name:"Building with the Claude API",url:"https://anthropic.skilljar.com/claude-with-the-anthropic-api",domains:[1,2,3,4,5]},
+  {id:"sub",name:"Introduction to Subagents",url:"https://anthropic.skilljar.com/introduction-to-subagents",domains:[1,5]},
+  {id:"code",name:"Claude Code in Action",url:"https://anthropic.skilljar.com/claude-code-in-action",domains:[1,2,3,5]},
+  {id:"mcp",name:"Introduction to Model Context Protocol",url:"https://anthropic.skilljar.com/introduction-to-model-context-protocol",domains:[2]},
+  {id:"skills",name:"Introduction to Agent Skills",url:"https://anthropic.skilljar.com/introduction-to-agent-skills",domains:[3]}
+];
+
+var DOMAIN_COURSES={
+  1:[
+    {id:"api-d1",name:"Building with the Claude API",url:"https://anthropic.skilljar.com/claude-with-the-anthropic-api",lessons:["Multi-turn conversations & system prompts","Multi-turn conversations with tools","Agents: parallelization & chaining workflows","Routing workflows & agents with tools","Workflows vs agents"]},
+    {id:"sub-d1",name:"Introduction to Subagents",url:"https://anthropic.skilljar.com/introduction-to-subagents",lessons:["What are subagents?","Creating a subagent","Designing effective subagents"]},
+    {id:"code-d1",name:"Claude Code in Action",url:"https://anthropic.skilljar.com/claude-code-in-action",lessons:["Introducing hooks & defining hooks","Implementing a hook & gotchas","Useful hooks","The Claude Code SDK"]}
+  ],
+  2:[
+    {id:"mcp-d2",name:"Introduction to Model Context Protocol",url:"https://anthropic.skilljar.com/introduction-to-model-context-protocol",lessons:["Introducing MCP & MCP clients","Project setup & defining tools with MCP","The server inspector","Implementing a client","Defining resources & accessing resources","Defining prompts & prompts in the client","Final assessment on MCP"]},
+    {id:"api-d2",name:"Building with the Claude API",url:"https://anthropic.skilljar.com/claude-with-the-anthropic-api",lessons:["Introducing tool use & tool schemas","Handling message blocks & tool results","Fine-grained tool calling & web search tool","Introducing MCP (server & client)","Defining tools, resources & prompts in MCP"]},
+    {id:"code-d2",name:"Claude Code in Action",url:"https://anthropic.skilljar.com/claude-code-in-action",lessons:["MCP servers with Claude Code"]}
+  ],
+  3:[
+    {id:"code-d3",name:"Claude Code in Action",url:"https://anthropic.skilljar.com/claude-code-in-action",lessons:["Claude Code setup & project setup","Adding context & making changes","Custom commands","Github integration"]},
+    {id:"skills-d3",name:"Introduction to Agent Skills",url:"https://anthropic.skilljar.com/introduction-to-agent-skills",lessons:["What are skills?","Creating your first skill","Configuration and multi-file skills","Skills vs. other Claude Code features","Sharing skills","Troubleshooting skills"]},
+    {id:"api-d3",name:"Building with the Claude API",url:"https://anthropic.skilljar.com/claude-with-the-anthropic-api",lessons:["Claude Code setup & in action"]}
+  ],
+  4:[
+    {id:"api-d4",name:"Building with the Claude API",url:"https://anthropic.skilljar.com/claude-with-the-anthropic-api",lessons:["Temperature, streaming & structured data","Prompt evaluation workflow","Generating test datasets & model grading","Prompt engineering: clear & direct","Structure with XML tags & examples"]}
+  ],
+  5:[
+    {id:"api-d5",name:"Building with the Claude API",url:"https://anthropic.skilljar.com/claude-with-the-anthropic-api",lessons:["Multi-turn conversations & system prompts","RAG: text chunking & embeddings","Full RAG flow & BM25 lexical search","Prompt caching"]},
+    {id:"sub-d5",name:"Introduction to Subagents",url:"https://anthropic.skilljar.com/introduction-to-subagents",lessons:["Using subagents effectively"]},
+    {id:"code-d5",name:"Claude Code in Action",url:"https://anthropic.skilljar.com/claude-code-in-action",lessons:["Controlling context"]}
+  ]
+};
+
+var SCENARIOS=[
+  {num:1,title:"Customer Support Resolution Agent",body:"You are building a customer support resolution agent using the Claude Agent SDK. The agent handles high-ambiguity requests like returns, billing disputes, and account issues. It has access to backend systems through custom MCP tools (get_customer, lookup_order, process_refund, escalate_to_human). Target: 80%+ first-contact resolution.",domains:["Agentic Architecture","Tool Design & MCP","Context & Reliability"],dIds:[1,2,5]},
+  {num:2,title:"Code Generation with Claude Code",body:"You are using Claude Code to accelerate software development. Your team uses it for code generation, refactoring, debugging, and documentation. You need to integrate it into your development workflow with custom slash commands, CLAUDE.md configurations, and understand when to use plan mode vs direct execution.",domains:["Claude Code Workflows","Context & Reliability"],dIds:[3,5]},
+  {num:3,title:"Multi-Agent Research System",body:"You are building a multi-agent research system using the Claude Agent SDK. A coordinator agent delegates to specialized subagents: one searches the web, one analyzes documents, one synthesizes findings, and one generates reports. The system researches topics and produces comprehensive, cited reports.",domains:["Agentic Architecture","Tool Design & MCP","Context & Reliability"],dIds:[1,2,5]},
+  {num:4,title:"Developer Productivity with Claude",body:"You are building developer productivity tools using the Claude Agent SDK. The agent helps engineers explore unfamiliar codebases, understand legacy systems, generate boilerplate code, and automate repetitive tasks. It uses the built-in tools (Read, Write, Bash, Grep, Glob) and integrates with MCP servers.",domains:["Tool Design & MCP","Claude Code Workflows","Agentic Architecture"],dIds:[2,3,1]},
+  {num:5,title:"Claude Code for Continuous Integration",body:"You are integrating Claude Code into your CI/CD pipeline. The system runs automated code reviews, generates test cases, and provides feedback on pull requests. You need to design prompts that provide actionable feedback and minimize false positives.",domains:["Claude Code Workflows","Prompt Engineering"],dIds:[3,4]},
+  {num:6,title:"Structured Data Extraction",body:"You are building a structured data extraction system using Claude. The system extracts information from unstructured documents, validates the output using JSON schemas, and maintains high accuracy. It must handle edge cases gracefully and integrate with downstream systems.",domains:["Prompt Engineering","Context & Reliability"],dIds:[4,5]}
+];
+
+var QUESTIONS=[
+  {id:1,scenario:"Customer Support Agent",scenarioColor:"#a78bfa",bg:"rgba(167,139,250,0.15)",
+   q:"Production data shows that in 12% of cases, your agent skips get_customer entirely and calls lookup_order using only the customer's stated name, occasionally leading to misidentified accounts and incorrect refunds. What change would most effectively address this reliability issue?",
+   opts:["Add a programmatic prerequisite that blocks lookup_order and process_refund calls until get_customer has returned a verified customer ID","Enhance the system prompt to state that customer verification via get_customer is mandatory before any order operations","Add few-shot examples showing the agent always calling get_customer first, even when customers volunteer order details","Implement a routing classifier that analyzes each request and enables only the subset of tools appropriate for that request type"],
+   correct:0,explanation:"When a specific tool sequence is required for critical business logic (like verifying customer identity before processing refunds), programmatic enforcement provides deterministic guarantees that prompt-based approaches cannot. Options B and C rely on probabilistic LLM compliance, which is insufficient when errors have financial consequences. Option D addresses tool availability rather than tool ordering."},
+  {id:2,scenario:"Customer Support Agent",scenarioColor:"#a78bfa",bg:"rgba(167,139,250,0.15)",
+   q:"Production logs show the agent frequently calls get_customer when users ask about orders (e.g., 'check my order #12345'), instead of calling lookup_order. Both tools have minimal descriptions ('Retrieves customer information' / 'Retrieves order details') and accept similar identifier formats. What's the most effective first step to improve tool selection reliability?",
+   opts:["Add few-shot examples to the system prompt demonstrating correct tool selection patterns, with 5–8 examples showing order-related queries routing to lookup_order","Expand each tool's description to include input formats it handles, example queries, edge cases, and boundaries explaining when to use it versus similar tools","Implement a routing layer that parses user input before each turn and pre-selects the appropriate tool based on detected keywords and identifier patterns","Consolidate both tools into a single lookup_entity tool that accepts any identifier and internally determines which backend to query"],
+   correct:1,explanation:"Tool descriptions are the primary mechanism LLMs use for tool selection. When descriptions are minimal, models lack the context to differentiate between similar tools. Option B directly addresses this root cause with a low-effort, high-leverage fix. Few-shot examples (A) add token overhead without fixing the underlying issue. A routing layer (C) is over-engineered and bypasses the LLM's natural language understanding."},
+  {id:3,scenario:"Customer Support Agent",scenarioColor:"#a78bfa",bg:"rgba(167,139,250,0.15)",
+   q:"Your agent achieves 55% first-contact resolution, well below the 80% target. Logs show it escalates straightforward cases (standard damage replacements with photo evidence) while attempting to autonomously handle complex situations requiring policy exceptions. What's the most effective way to improve escalation calibration?",
+   opts:["Add explicit escalation criteria to your system prompt with few-shot examples demonstrating when to escalate versus resolve autonomously","Have the agent self-report a confidence score (1–10) before each response and automatically route requests to humans when confidence falls below a threshold","Deploy a separate classifier model trained on historical tickets to predict which requests need escalation before the main agent begins processing","Implement sentiment analysis to detect customer frustration levels and automatically escalate when negative sentiment exceeds a threshold"],
+   correct:0,explanation:"Adding explicit escalation criteria with few-shot examples directly addresses the root cause: unclear decision boundaries. Option B fails because LLM self-reported confidence is poorly calibrated — the agent is already incorrectly confident on hard cases. Option C is over-engineered, requiring labeled data and ML infrastructure when prompt optimization hasn't been tried. Option D solves a different problem entirely; sentiment doesn't correlate with case complexity."},
+  {id:4,scenario:"Code Generation",scenarioColor:"#34d399",bg:"rgba(52,211,153,0.12)",
+   q:"You want to create a custom /review slash command that runs your team's standard code review checklist. This command should be available to every developer when they clone or pull the repository. Where should you create this command file?",
+   opts:["In the .claude/commands/ directory in the project repository","In ~/.claude/commands/ in each developer's home directory","In the CLAUDE.md file at the project root","In a .claude/config.json file with a commands array"],
+   correct:0,explanation:"Project-scoped custom slash commands should be stored in the .claude/commands/ directory within the repository. These commands are version-controlled and automatically available to all developers when they clone or pull the repo. ~/.claude/commands/ is for personal commands not shared via version control. CLAUDE.md is for project instructions and context, not command definitions. The config.json mechanism described in D doesn't exist in Claude Code."},
+  {id:5,scenario:"Code Generation",scenarioColor:"#34d399",bg:"rgba(52,211,153,0.12)",
+   q:"You've been assigned to restructure the team's monolithic application into microservices. This will involve changes across dozens of files and requires decisions about service boundaries and module dependencies. Which approach should you take?",
+   opts:["Enter plan mode to explore the codebase, understand dependencies, and design an implementation approach before making changes","Start with direct execution and make changes incrementally, letting the implementation reveal the natural service boundaries","Use direct execution with comprehensive upfront instructions detailing exactly how each service should be structured","Begin in direct execution mode and only switch to plan mode if you encounter unexpected complexity during implementation"],
+   correct:0,explanation:"Plan mode is designed for complex tasks involving large-scale changes, multiple valid approaches, and architectural decisions — exactly what monolith-to-microservices restructuring requires. It enables safe codebase exploration and design before committing to changes. Option B risks costly rework when dependencies are discovered late. Option C assumes you already know the right structure. Option D ignores that the complexity is already stated in the requirements."},
+  {id:6,scenario:"Code Generation",scenarioColor:"#34d399",bg:"rgba(52,211,153,0.12)",
+   q:"Your codebase has distinct areas with different coding conventions. Test files are spread throughout the codebase alongside the code they test (e.g., Button.test.tsx next to Button.tsx), and you want all tests to follow the same conventions regardless of location. What's the most maintainable way to ensure Claude automatically applies the correct conventions?",
+   opts:["Create rule files in .claude/rules/ with YAML frontmatter specifying glob patterns to conditionally apply conventions based on file paths","Consolidate all conventions in the root CLAUDE.md file under headers for each area, relying on Claude to infer which section applies","Create skills in .claude/skills/ for each code type that include the relevant conventions in their SKILL.md files","Place a separate CLAUDE.md file in each subdirectory containing that area's specific conventions"],
+   correct:0,explanation:".claude/rules/ with glob patterns (e.g., **/*.test.tsx) allows conventions to be automatically applied based on file paths regardless of directory location — essential for test files spread throughout the codebase. Option B relies on inference rather than explicit matching, making it unreliable. Option C requires manual skill invocation. Option D can't handle files spread across many directories since CLAUDE.md files are directory-bound."},
+  {id:7,scenario:"Multi-Agent Research",scenarioColor:"#fb923c",bg:"rgba(251,146,60,0.12)",
+   q:"After running the system on 'impact of AI on creative industries', each subagent completes successfully. However, final reports cover only visual arts, missing music, writing, and film production. Coordinator logs show it decomposed the topic into: 'AI in digital art creation', 'AI in graphic design', and 'AI in photography'. What is the most likely root cause?",
+   opts:["The synthesis agent lacks instructions for identifying coverage gaps in the findings it receives from other agents","The coordinator agent's task decomposition is too narrow, resulting in subagent assignments that don't cover all relevant domains of the topic","The web search agent's queries are not comprehensive enough and need to be expanded to cover more creative industry sectors","The document analysis agent is filtering out sources related to non-visual creative industries due to overly restrictive relevance criteria"],
+   correct:1,explanation:"The coordinator's logs reveal the root cause directly: it decomposed 'creative industries' into only visual arts subtasks, completely omitting music, writing, and film. The subagents executed their assigned tasks correctly — the problem is what they were assigned. Options A, C, and D incorrectly blame downstream agents that are working correctly within their assigned scope."},
+  {id:8,scenario:"Multi-Agent Research",scenarioColor:"#fb923c",bg:"rgba(251,146,60,0.12)",
+   q:"The web search subagent times out while researching a complex topic. You need to design how this failure information flows back to the coordinator agent. Which error propagation approach best enables intelligent recovery?",
+   opts:["Return structured error context to the coordinator including the failure type, the attempted query, any partial results, and potential alternative approaches","Implement automatic retry logic with exponential backoff within the subagent, returning a generic 'search unavailable' status only after all retries are exhausted","Catch the timeout within the subagent and return an empty result set marked as successful","Propagate the timeout exception directly to a top-level handler that terminates the entire research workflow"],
+   correct:0,explanation:"Structured error context gives the coordinator the information it needs to make intelligent recovery decisions — whether to retry with a modified query, try an alternative approach, or proceed with partial results. Option B's generic status hides valuable context from the coordinator, preventing informed decisions. Option C suppresses the error by marking failure as success, which prevents any recovery. Option D terminates the entire workflow unnecessarily."},
+  {id:9,scenario:"Multi-Agent Research",scenarioColor:"#fb923c",bg:"rgba(251,146,60,0.12)",
+   q:"During testing, the synthesis agent frequently needs to verify specific claims. Currently, when verification is needed, the synthesis agent returns control to the coordinator, which invokes the web search agent, then re-invokes synthesis — adding 2–3 round trips and increasing latency by 40%. Your evaluation shows 85% of these verifications are simple fact-checks. What's the most effective approach?",
+   opts:["Give the synthesis agent a scoped verify_fact tool for simple lookups, while complex verifications continue delegating to the web search agent through the coordinator","Have the synthesis agent accumulate all verification needs and return them as a batch to the coordinator at the end of its pass","Give the synthesis agent access to all web search tools so it can handle any verification need directly without round-trips","Have the web search agent proactively cache extra context around each source during initial research, anticipating what the synthesis agent might need"],
+   correct:0,explanation:"Option A applies the principle of least privilege by giving the synthesis agent only what it needs for the 85% common case (simple fact verification) while preserving the existing coordination pattern for complex cases. Option B's batching approach creates blocking dependencies since synthesis steps may depend on earlier verified facts. Option C over-provisions the synthesis agent, violating separation of concerns. Option D relies on speculative caching."},
+  {id:10,scenario:"CI/CD Integration",scenarioColor:"#60a5fa",bg:"rgba(96,165,250,0.12)",
+   q:"Your pipeline script runs claude \"Analyze this pull request for security issues\" but the job hangs indefinitely. Logs indicate Claude Code is waiting for interactive input. What's the correct approach to run Claude Code in an automated pipeline?",
+   opts:["Add the -p flag: claude -p \"Analyze this pull request for security issues\"","Set the environment variable CLAUDE_HEADLESS=true before running the command","Redirect stdin from /dev/null: claude \"Analyze this pull request...\" < /dev/null","Add the --batch flag: claude --batch \"Analyze this pull request for security issues\""],
+   correct:0,explanation:"The -p (or --print) flag is the documented way to run Claude Code in non-interactive mode. It processes the prompt, outputs the result to stdout, and exits without waiting for user input — exactly what CI/CD pipelines require. The other options reference non-existent features (CLAUDE_HEADLESS environment variable, --batch flag) or use Unix workarounds that don't properly address Claude Code's command syntax."},
+  {id:11,scenario:"CI/CD Integration",scenarioColor:"#60a5fa",bg:"rgba(96,165,250,0.12)",
+   q:"Your team wants to reduce API costs for automated analysis. Two workflows: (1) a blocking pre-merge check that must complete before developers can merge, and (2) a technical debt report generated overnight for review the next morning. Your manager proposes switching both to the Message Batches API for its 50% cost savings. How should you evaluate this proposal?",
+   opts:["Use batch processing for the technical debt reports only; keep real-time calls for pre-merge checks","Switch both workflows to batch processing with status polling to check for completion","Keep real-time calls for both workflows to avoid batch result ordering issues","Switch both to batch processing with a timeout fallback to real-time if batches take too long"],
+   correct:0,explanation:"The Message Batches API offers 50% cost savings but has processing times up to 24 hours with no guaranteed latency SLA. This makes it unsuitable for blocking pre-merge checks where developers wait for results, but ideal for overnight batch jobs like technical debt reports. Option B is wrong because relying on 'often faster' completion isn't acceptable for blocking workflows. Option C reflects a misconception — batch results can be correlated using custom_id fields."},
+  {id:12,scenario:"CI/CD Integration",scenarioColor:"#60a5fa",bg:"rgba(96,165,250,0.12)",
+   q:"A pull request modifies 14 files across the stock tracking module. Your single-pass review produces inconsistent results: detailed feedback for some files but superficial comments for others, obvious bugs missed, and contradictory feedback — flagging a pattern as problematic in one file while approving identical code elsewhere in the same PR. How should you restructure the review?",
+   opts:["Split into focused passes: analyze each file individually for local issues, then run a separate integration-focused pass examining cross-file data flow","Require developers to split large PRs into smaller submissions of 3–4 files before the automated review runs","Switch to a higher-tier model with a larger context window to give all 14 files adequate attention in one pass","Run three independent review passes on the full PR and only flag issues that appear in at least two of the three runs"],
+   correct:0,explanation:"Splitting reviews into focused passes directly addresses the root cause: attention dilution when processing many files at once. File-by-file analysis ensures consistent depth, while a separate integration pass catches cross-file issues. Option B shifts burden to developers without improving the system. Option C misunderstands that larger context windows don't solve attention quality issues. Option D would actually suppress detection of real bugs."}
+];
+
+/* ── STATE ── */
+var doneMap={}, openDomains={1:true}, openCourses={}, nextUpTarget=null;
+var qAnswers={}, qRevealed={};
+var CIRC=251.33;
+var COLORS=["#a78bfa","#60a5fa","#34d399","#fb923c","#f472b6","#fbbf24","#fff","#e879f9","#38bdf8"];
+var studyOpen={};
+
+/* ── UTILS ── */
+function mk(tag){return document.createElement(tag);}
+function getDomainStats(d){var total=0,done=0;var cs=DOMAIN_COURSES[d.id];for(var i=0;i<cs.length;i++){total+=cs[i].lessons.length;for(var j=0;j<cs[i].lessons.length;j++){if(doneMap[cs[i].id+"-"+j])done++;}}return{total:total,done:done,pct:total>0?Math.round(done/total*100):0};}
+function getCourseStats(c){var done=0;for(var i=0;i<c.lessons.length;i++){if(doneMap[c.id+"-"+i])done++;}return{done:done,pct:Math.round(done/c.lessons.length*100)};}
+function getTotalLessons(){var t=0;for(var i=0;i<DOMAINS.length;i++){var cs=DOMAIN_COURSES[DOMAINS[i].id];for(var j=0;j<cs.length;j++)t+=cs[j].lessons.length;}return t;}
+function getDoneLessons(){var n=0;Object.keys(doneMap).forEach(function(k){if(doneMap[k])n++;});return n;}
+function getWeightedPct(){var t=0;for(var i=0;i<DOMAINS.length;i++){var s=getDomainStats(DOMAINS[i]);t+=(s.pct/100)*DOMAINS[i].weight;}return Math.round(t);}
+function countCompletedCourses(){var n=0;for(var di=0;di<DOMAINS.length;di++){var cs=DOMAIN_COURSES[DOMAINS[di].id];for(var ci=0;ci<cs.length;ci++){var c=cs[ci];var s=getCourseStats(c);if(s.done===c.lessons.length&&c.lessons.length>0)n++;}}return n;}
+function getBadgeTier(n){if(n===0)return null;var p=n/getTotalCoursesCount();if(p<=0.25)return{cls:"badge-bronze",label:"Bronze"};if(p<=0.5)return{cls:"badge-silver",label:"Silver"};if(p<=0.85)return{cls:"badge-gold",label:"Gold"};return{cls:"badge-platinum",label:"Platinum"};}
+function getTotalCoursesCount(){var n=0;for(var i=0;i<DOMAINS.length;i++)n+=DOMAIN_COURSES[DOMAINS[i].id].length;return n;}
+function getNextLesson(){for(var di=0;di<DOMAINS.length;di++){var d=DOMAINS[di];var cs=DOMAIN_COURSES[d.id];for(var ci=0;ci<cs.length;ci++){var c=cs[ci];for(var li=0;li<c.lessons.length;li++){if(!doneMap[c.id+"-"+li])return{lesson:c.lessons[li],course:c.name,domain:d,courseIdx:ci,lessonIdx:li,courseId:c.id,courseUrl:c.url};}}}return null;}
+
+function updateNextUp(){var n=getNextLesson();var card=document.getElementById("next-up-card");if(n){nextUpTarget=n;document.getElementById("next-lesson-name").textContent=n.lesson;document.getElementById("next-course-name").textContent=n.course+" — "+n.domain.name;card.classList.remove("hidden");}else{card.classList.add("hidden");nextUpTarget=null;}}
+function handleNextUp(){if(!nextUpTarget)return;openDomains[nextUpTarget.domain.id]=true;openCourses[nextUpTarget.domain.id+"-"+nextUpTarget.courseIdx]=true;renderProgress();setTimeout(function(){var rows=document.querySelectorAll(".lesson-row");for(var i=0;i<rows.length;i++){if(rows[i].dataset.key===nextUpTarget.courseId+"-"+nextUpTarget.lessonIdx){rows[i].scrollIntoView({behavior:"smooth",block:"center"});rows[i].style.background="rgba(167,139,250,0.15)";setTimeout(function(r){r.style.background="";},1400,rows[i]);break;}}},80);}
+
+/* ── CONFETTI ── */
+function spawnConfetti(x,y,big){
+  var count=big?160:28;
+  for(var i=0;i<count;i++){
+    var p=document.createElement("div");
+    var size=big?(10+Math.random()*14):(7+Math.random()*8);
+    var color=COLORS[Math.floor(Math.random()*COLORS.length)];
+    p.style.cssText="position:fixed;pointer-events:none;z-index:9999;width:"+size+"px;height:"+size+"px;border-radius:50%;background:"+color+";left:"+x+"px;top:"+y+"px;transform:translate(-50%,-50%)";
+    document.body.appendChild(p);
+    var angle=big
+      ? (Math.random()*2*Math.PI)
+      : ((-160+Math.random()*140)*(Math.PI/180));
+    var speed=big?(180+Math.random()*320):(80+Math.random()*120);
+    var tx=Math.cos(angle)*speed;
+    var ty=big?(Math.sin(angle)*speed):(Math.sin(angle)*speed);
+    var dur=big?(1.1+Math.random()*.8):(0.7+Math.random()*.5);
+    p.animate([
+      {transform:"translate(-50%,-50%) scale(1)",opacity:1},
+      {transform:"translate(calc(-50% + "+tx+"px),calc(-50% + "+ty+"px)) scale(0.2)",opacity:0}
+    ],{duration:dur*1000,easing:"cubic-bezier(0.1,0.8,0.3,1)",fill:"forwards"}).onfinish=(function(el){return function(){el.remove();};})(p);
+  }
+}
+
+/* ── UPDATE METRICS ── */
+function updateMetrics(){var total=getTotalLessons(),done=getDoneLessons(),pct=Math.round(done/total*100);document.getElementById("overall-pct").textContent=pct+"%";document.getElementById("overall-sub").textContent=done+" / "+total;document.getElementById("prog-arc").setAttribute("stroke-dashoffset",(CIRC*(1-pct/100)).toFixed(2));document.getElementById("m-lessons").textContent=done+"/"+total;var started=0;for(var i=0;i<DOMAINS.length;i++){if(getDomainStats(DOMAINS[i]).done>0)started++;}document.getElementById("m-domains").textContent=started+"/5";document.getElementById("m-weighted").textContent=getWeightedPct()+"%";var b=document.getElementById("complete-banner");if(done===total&&done>0)b.classList.add("show");else b.classList.remove("show");updateNextUp();}
+
+/* ── RENDER PROGRESS ── */
+function renderProgress(){
+  var tree=document.getElementById("tree");tree.innerHTML="";
+  var tier=getBadgeTier(countCompletedCourses());
+  for(var di=0;di<DOMAINS.length;di++){
+    var d=DOMAINS[di];var st=getDomainStats(d);var isOpen=!!openDomains[d.id];
+    var cs=DOMAIN_COURSES[d.id];
+    var card=mk("div");card.className="domain-card"+(isOpen?" open":"");
+    var dh=mk("div");dh.className="domain-header";dh.style.background=isOpen?d.bg:"transparent";
+    var icon=mk("div");icon.className="domain-icon";icon.style.background=d.bg;icon.style.color=d.color;icon.textContent="D"+d.id;
+    var dInfo=mk("div");dInfo.className="domain-info";
+    var dName=mk("div");dName.className="domain-name";dName.textContent=d.name;
+    var dMeta=mk("div");dMeta.className="domain-meta";
+    var bt=mk("div");bt.className="bar-track";var bf=mk("div");bf.className="bar-fill";bf.style.width=st.pct+"%";bf.style.background=d.color;bt.appendChild(bf);
+    var lc=mk("span");lc.className="lessons-count";lc.textContent=st.done+"/"+st.total;
+    var wp=mk("span");wp.className="weight-pill";wp.style.background=d.bg;wp.style.color=d.color;wp.textContent=d.weight+"% exam";
+    dMeta.appendChild(bt);dMeta.appendChild(lc);dMeta.appendChild(wp);
+    dInfo.appendChild(dName);dInfo.appendChild(dMeta);
+    var dr=mk("div");dr.className="domain-right";
+    var dpct=mk("span");dpct.className="domain-pct";dpct.style.color=d.color;dpct.textContent=st.pct+"%";
+    var chev=mk("div");chev.className="chev"+(isOpen?" open":"");chev.innerHTML="▲";
+    dr.appendChild(dpct);dr.appendChild(chev);
+    dh.appendChild(icon);dh.appendChild(dInfo);dh.appendChild(dr);
+    (function(did){dh.addEventListener("click",function(){openDomains[did]=!openDomains[did];renderProgress();updateMetrics();});})(d.id);
+    card.appendChild(dh);
+
+    if(isOpen){
+      var cw=mk("div");cw.className="courses-wrap";
+      for(var ci=0;ci<cs.length;ci++){
+        var c=cs[ci];var css=getCourseStats(c);
+        var cKey=d.id+"-"+ci;var cOpen=!!openCourses[cKey];
+        var isFull=css.done===c.lessons.length&&c.lessons.length>0;
+        var statusBg=isFull?d.color:css.done>0?d.color+"88":"rgba(255,255,255,0.12)";
+        var cb=mk("div");cb.className="course-block";
+        var ch=mk("div");ch.className="course-header";ch.style.background=cOpen?d.bg:"transparent";
+        var cSt=mk("div");cSt.className="course-status";cSt.style.background=statusBg;if(isFull)cSt.innerHTML="✓";else if(css.done>0)cSt.textContent=css.done;
+        var cInfo=mk("div");cInfo.className="course-info";
+        var cName=mk("div");cName.className="course-name";cName.textContent=c.name;
+        var cMeta=mk("div");cMeta.className="course-meta";
+        var cBar=mk("div");cBar.className="course-bar";var cBF=mk("div");cBF.className="course-bar-fill";cBF.style.width=css.pct+"%";cBF.style.background=d.color;cBar.appendChild(cBF);
+        var cCnt=mk("span");cCnt.className="course-count";cCnt.textContent=css.done+"/"+c.lessons.length+" lessons";
+        cMeta.appendChild(cBar);cMeta.appendChild(cCnt);cInfo.appendChild(cName);cInfo.appendChild(cMeta);
+        var cr=mk("div");cr.className="course-right";
+        if(isFull&&tier){var bdg=mk("span");bdg.className="course-badge show "+tier.cls;bdg.textContent=tier.label;cr.appendChild(bdg);}
+        var cpct=mk("span");cpct.className="course-pct";cpct.style.color=d.color;cpct.textContent=css.pct+"%";
+        var lnk=mk("a");lnk.className="ext-link";lnk.href=c.url;lnk.target="_blank";lnk.rel="noopener noreferrer";lnk.textContent="open ↗";
+        lnk.addEventListener("click",function(e){e.stopPropagation();});
+        var rstBtn=mk("button");rstBtn.className="rst-btn";rstBtn.textContent="↺ Reset";
+        rstBtn.addEventListener("click",(function(course,btn){return function(e){
+          e.stopPropagation();
+          if(btn.dataset.confirm==="1"){for(var x=0;x<course.lessons.length;x++)doneMap[course.id+"-"+x]=false;renderProgress();updateMetrics();}
+          else{btn.dataset.confirm="1";btn.textContent="Sure?";setTimeout(function(){if(btn.dataset.confirm==="1"){btn.dataset.confirm="0";btn.textContent="↺ Reset";}},2500);}
+        };})(c,rstBtn));
+        var cChev=mk("span");cChev.className="c-chev"+(cOpen?" open":"");cChev.innerHTML="▼";
+        cr.appendChild(cpct);cr.appendChild(lnk);cr.appendChild(rstBtn);cr.appendChild(cChev);
+        ch.appendChild(cSt);ch.appendChild(cInfo);ch.appendChild(cr);
+        (function(key){ch.addEventListener("click",function(){openCourses[key]=!openCourses[key];renderProgress();updateMetrics();});})(cKey);
+        cb.appendChild(ch);
+
+        if(cOpen){
+          var lw=mk("div");lw.className="lessons-wrap";
+          for(var li=0;li<c.lessons.length;li++){
+            var lKey=c.id+"-"+li;var isDone=!!doneMap[lKey];
+            var row=mk("div");row.className="lesson-row";row.dataset.key=lKey;
+            var chk=mk("div");chk.className="check"+(isDone?" done":"");
+            if(isDone)chk.style.background=d.color;
+            chk.innerHTML='<span class="check-tick">✓</span>';
+            var lNum=mk("span");lNum.className="lesson-num";lNum.textContent=(li+1);
+            var lLnk=mk("a");lLnk.className="lesson-link"+(isDone?" done":"");lLnk.textContent=c.lessons[li];lLnk.href=c.url;lLnk.target="_blank";lLnk.rel="noopener noreferrer";
+            row.appendChild(chk);row.appendChild(lNum);row.appendChild(lLnk);
+            (function(k,checkEl,rowColor,was){
+              checkEl.addEventListener("click",function(e){
+                e.stopPropagation();var wasUndone=!doneMap[k];var prev=countCompletedCourses();
+                doneMap[k]=!doneMap[k];var now=countCompletedCourses();
+                if(wasUndone){var r=checkEl.getBoundingClientRect();var cx=r.left+r.width/2,cy=r.top+r.height/2;spawnConfetti(cx,cy,false);if(now>prev)setTimeout(function(){spawnConfetti(cx,cy,true);},100);}
+                renderProgress();updateMetrics();
+              });
+            })(lKey,chk,d.color);
+            lw.appendChild(row);
+          }
+          cb.appendChild(lw);
+        }
+        cw.appendChild(cb);
+      }
+      card.appendChild(cw);
+    }
+    tree.appendChild(card);
+  }
+  updateMetrics();
+}
+
+/* ── RENDER INSTRUCTOR ── */
+function renderInstructor(){
+  var grid=document.getElementById("domain-overview-grid");grid.innerHTML="";
+  DOMAINS.forEach(function(d){
+    var card=mk("div");card.className="domain-overview-card";
+    card.setAttribute("data-id","d"+d.id);
+    card.style.borderTop="3px solid "+d.color;
+    card.innerHTML='<div class="doc-num" style="color:'+d.color+'">Domain '+d.id+'</div><div class="doc-name">'+d.name+'</div><div class="doc-weight" style="background:'+d.bg+';color:'+d.color+'">'+d.weight+'% of exam</div><div class="doc-tasks">'+d.tasks.length+' task statements</div>';
+    card.addEventListener("click",function(){studyOpen[d.id]=true;document.getElementById("study-domain-"+d.id).scrollIntoView({behavior:"smooth",block:"start"});document.getElementById("sdb-"+d.id).classList.add("open");document.getElementById("sdh-chev-"+d.id).classList.add("open");});
+    grid.appendChild(card);
+  });
+
+  var tree=document.getElementById("study-tree");tree.innerHTML="";
+  DOMAINS.forEach(function(d){
+    var wrap=mk("div");wrap.className="study-domain";wrap.id="study-domain-"+d.id;
+    var hdr=mk("div");hdr.className="study-domain-header";
+    hdr.style.borderLeft="3px solid "+d.color;
+    hdr.innerHTML='<div class="sdh-icon" style="background:'+d.bg+';color:'+d.color+'">D'+d.id+'</div><div class="sdh-info"><div class="sdh-title">'+d.name+'</div><div class="sdh-sub">'+d.weight+'% of exam · '+d.tasks.length+' task statements</div></div><span class="sdh-chev" id="sdh-chev-'+d.id+'">▼</span>';
+    var body=mk("div");body.className="study-domain-body";body.id="sdb-"+d.id;
+    if(studyOpen[d.id])body.classList.add("open");
+    d.tasks.forEach(function(t,ti){
+      var tb=mk("div");tb.className="task-block";
+      tb.innerHTML='<div class="task-header"><div class="task-num" style="background:'+d.bg+';color:'+d.color+'">'+t.id+'</div><div class="task-title">'+t.title+'</div></div>'+
+      '<div class="knowledge-section"><div class="ks-label"><span>Knowledge</span></div><ul class="ks-list">'+t.know.map(function(k){return'<li>'+k.replace(/`([^`]+)`/g,'<code>$1</code>')+'</li>';}).join('')+'</ul></div>'+
+      '<div class="skills-section"><div class="ks-label"><span>Skills</span></div><ul class="ks-list">'+t.skills.map(function(s){return'<li>'+s.replace(/`([^`]+)`/g,'<code>$1</code>')+'</li>';}).join('')+'</ul></div>';
+      body.appendChild(tb);
+    });
+    hdr.addEventListener("click",function(did,bdyId){return function(){var bdy=document.getElementById(bdyId);var cv=document.getElementById("sdh-chev-"+did);bdy.classList.toggle("open");cv.classList.toggle("open");studyOpen[did]=bdy.classList.contains("open");};}(d.id,"sdb-"+d.id));
+    wrap.appendChild(hdr);wrap.appendChild(body);tree.appendChild(wrap);
+  });
+}
+
+/* ── RENDER SCENARIOS ── */
+function renderScenarios(){
+  var grid=document.getElementById("scenario-grid");grid.innerHTML="";
+  var dColors={1:DOMAINS[0].color,2:DOMAINS[1].color,3:DOMAINS[2].color,4:DOMAINS[3].color,5:DOMAINS[4].color};
+  var dBg={1:DOMAINS[0].bg,2:DOMAINS[1].bg,3:DOMAINS[2].bg,4:DOMAINS[3].bg,5:DOMAINS[4].bg};
+  SCENARIOS.forEach(function(s){
+    var card=mk("div");card.className="scenario-card";
+    var tagHtml=s.dIds.map(function(id){return'<span class="sc-domain-tag" style="background:'+dBg[id]+';color:'+dColors[id]+'">D'+id+'</span>';}).join('');
+    card.innerHTML='<div class="sc-num" style="color:'+dColors[s.dIds[0]]+'">Scenario '+s.num+'</div><div class="sc-title">'+s.title+'</div><div class="sc-body">'+s.body+'</div><div class="sc-domains">'+tagHtml+'</div>';
+    grid.appendChild(card);
+  });
+}
+
+/* ── RENDER QUIZ ── */
+var qState={};
+function renderQuiz(){
+  var container=document.getElementById("quiz-container");container.innerHTML="";
+  document.getElementById("q-total").textContent=QUESTIONS.length;
+  QUESTIONS.forEach(function(q,qi){
+    var card=mk("div");card.className="q-card";
+    var meta=mk("div");meta.className="q-meta";
+    meta.innerHTML='<span class="q-scenario-tag" style="background:'+q.bg+';color:'+q.scenarioColor+'">'+q.scenario+'</span><span class="q-num">Q'+q.id+'</span>';
+    var body=mk("div");body.className="q-body";body.textContent=q.q;
+    var opts=mk("div");opts.className="q-options";
+    q.opts.forEach(function(opt,oi){
+      var o=mk("div");o.className="q-option";
+      o.dataset.qi=qi;o.dataset.oi=oi;
+      var letter=mk("div");letter.className="q-opt-letter";letter.textContent=String.fromCharCode(65+oi);
+      var text=mk("div");text.className="q-opt-text";text.textContent=opt;
+      o.appendChild(letter);o.appendChild(text);
+      o.addEventListener("click",function(){
+        if(qState[qi]&&qState[qi].revealed)return;
+        var prev=opts.querySelector(".q-option.selected");
+        if(prev)prev.classList.remove("selected");
+        o.classList.add("selected");
+        if(!qState[qi])qState[qi]={};
+        qState[qi].selected=oi;
+        updateQuizStats();
+      });
+      opts.appendChild(o);
+    });
+    var checkBtn=mk("button");checkBtn.className="quiz-btn quiz-btn-primary q-check-btn";checkBtn.style.cssText="margin:0 18px 14px;width:calc(100% - 36px)";checkBtn.textContent="Check answer";
+    var expl=mk("div");expl.className="q-explanation";expl.innerHTML='<strong>Correct answer: '+String.fromCharCode(65+q.correct)+'</strong> — '+q.explanation;
+    checkBtn.addEventListener("click",function(){
+      if(!qState[qi]||qState[qi].selected===undefined)return;
+      var allOpts=opts.querySelectorAll(".q-option");var sel=qState[qi].selected;
+      allOpts.forEach(function(o2,oi2){
+        o2.classList.remove("selected");o2.classList.add("locked");
+        if(oi2===q.correct)o2.classList.add("correct");
+        else if(oi2===sel&&sel!==q.correct)o2.classList.add("wrong");
+      });
+      qState[qi].revealed=true;qState[qi].correct=(sel===q.correct);
+      expl.classList.add("show");checkBtn.classList.add("q-check-btn-hidden");checkBtn.style.display="none";
+      updateQuizStats();
+    });
+    card.appendChild(meta);card.appendChild(body);card.appendChild(opts);card.appendChild(checkBtn);card.appendChild(expl);
+    container.appendChild(card);
+  });
+  updateQuizStats();
+}
+function updateQuizStats(){
+  var answered=0,score=0;
+  for(var k in qState){if(qState[k]&&qState[k].revealed){answered++;if(qState[k].correct)score++;}}
+  document.getElementById("q-answered").textContent=answered;
+  document.getElementById("q-score").textContent=score;
+}
+function resetQuiz(){qState={};renderQuiz();}
+function revealAll(){
+  QUESTIONS.forEach(function(q,qi){
+    if(!qState[qi])qState[qi]={selected:q.correct,revealed:true,correct:true};
+    else if(!qState[qi].revealed){qState[qi].selected=q.correct;qState[qi].revealed=true;qState[qi].correct=(qState[qi].selected===q.correct);}
+  });
+  document.querySelectorAll(".q-option").forEach(function(o){
+    var qi=parseInt(o.dataset.qi),oi=parseInt(o.dataset.oi);
+    o.classList.remove("selected");o.classList.add("locked");
+    if(oi===QUESTIONS[qi].correct)o.classList.add("correct");
+  });
+  document.querySelectorAll(".q-explanation").forEach(function(e){e.classList.add("show");});
+  document.querySelectorAll(".q-check-btn").forEach(function(b){b.style.display="none";});
+  updateQuizStats();
+}
+
+/* ── RENDER COURSES REF ── */
+function renderCoursesRef(){
+  var grid=document.getElementById("courses-ref-grid");grid.innerHTML="";
+  COURSES_DATA.forEach(function(c){
+    var card=mk("div");card.className="course-ref-card";
+    var tagHtml=c.domains.map(function(id){var d=DOMAINS[id-1];return'<span class="crc-domain" style="background:'+d.bg+';color:'+d.color+'">D'+id+'</span>';}).join('');
+    card.innerHTML='<div class="crc-title">'+c.name+'</div><div class="crc-domains">'+tagHtml+'</div><a class="crc-link" href="'+c.url+'" target="_blank" rel="noopener">Open course ↗</a>';
+    grid.appendChild(card);
+  });
+}
+
+/* ── PAGE SWITCHING ── */
+function switchPage(id,btn){
+  document.querySelectorAll(".page").forEach(function(p){p.classList.remove("active");});
+  document.querySelectorAll(".nav-tab").forEach(function(t){t.classList.remove("active");});
+  document.getElementById("page-"+id).classList.add("active");
+  if(btn)btn.classList.add("active");
+  if(id==="progress"){renderProgress();}
+  if(id==="instructor"){renderInstructor();}
+  if(id==="scenarios"){renderScenarios();}
+  if(id==="practice"){renderQuiz();}
+  if(id==="courses"){renderCoursesRef();}
+}
+
+/* ── INIT ── */
+renderInstructor();
+renderCoursesRef();
+</script>
+</body>
+</html>
