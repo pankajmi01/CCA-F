@@ -2,7 +2,7 @@
 
 A self-contained study tracker and reference guide for the **Anthropic CCA-F (Claude Certified Architect — Foundations)** certification exam.
 
-> **Live demo:** [yourusername.github.io/CCA-F](https://yourusername.github.io/CCA-F)  
+> **Live demo:** [pankajmi01.github.io/CCA-F](https://pankajmi01.github.io/CCA-F)  
 > **Academy:** [anthropic.skilljar.com](https://anthropic.skilljar.com/)
 
 ---
@@ -35,7 +35,7 @@ This is a single-file app — no build step, no dependencies, no server required
 
 ```bash
 # Clone and open locally
-git clone https://github.com/yourusername/CCA-F.git
+git clone https://github.com/pankajmi01/CCA-F.git
 cd CCA-F
 open index.html   # macOS
 # or just drag index.html into your browser
@@ -50,7 +50,7 @@ Progress is stored in memory during the session. To persist progress across sess
 3. Choose `main` branch, `/ (root)` folder
 4. Click **Save**
 
-Your tracker will be live at `https://yourusername.github.io/CCA-F/` within a minute.
+Your tracker will be live at `https://pankajmi01.github.io/CCA-F/` within a minute.
 
 ## Contributing
 
